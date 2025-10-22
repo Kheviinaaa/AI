@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+Mode: {{ run.mode|default('unknown') }}
+
+<div class="results-section">
+  <h3>Results: {{ run.run_id }}</h3>
+  <div class="btn-container">
+    <a href="/api/runs/{{ run.run_id }}/csv" class="btn btn-primary">Download CSV</a>
+    <a href="/" class="btn btn-secondary">Generate New</a>
+  </div>
+
+  {% for epic in run.output.stories %}
+  <p><strong>Epic:</strong> {{ epic.epic_id }}</p>
+  <p><strong>User Stories:</strong></p>
+  <ul>
+    {% for s in epic.stories %}
+      <li>{{ s }}</li>
+    {% endfor %}
+  </ul>
+  <p><strong>Test Cases:</strong></p>
+  <ul>
+    {% for t in epic.test_cases %}
+      <li>{{ t }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}
+
+
+  <h3>Data Table</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Epic ID</th>
+        <th>Story</th>
+        <th>Test Case</th>
+      </tr>
+    </thead>
+    <tbody>
+  {% for epic in run.output.stories %}
+    {% set n = [epic.stories|length, epic.test_cases|length]|max %}
+    {% for i in range(n) %}
+      <tr>
+        <td>{{ epic.epic_id }}</td>
+        <td>{{ epic.stories[i] if i < epic.stories|length else "" }}</td>
+        <td>{{ epic.test_cases[i] if i < epic.test_cases|length else "" }}</td>
+      </tr>
+    {% endfor %}
+  {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
