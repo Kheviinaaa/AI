@@ -1,0 +1,14 @@
+[
+  {
+    "Epic": "E-Commerce Checkout System",
+    "Valid": true
+  },
+  {
+    "Epic": "User Authentication",
+    "Valid": true
+  },
+  {
+    "Epic": "Order Management",
+    "Valid": true
+  }
+]
