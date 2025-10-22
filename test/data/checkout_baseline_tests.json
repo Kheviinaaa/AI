@@ -1,0 +1,67 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-01-01",
+      "story_id": "US-01",
+      "title": "Verify cart displays items correctly",
+      "preconditions": "User has added items to cart, user is on cart page",
+      "test_steps": "1. View shopping cart page\n2. Check displayed items\n3. Verify quantities and prices",
+      "expected_result": "All cart items displayed with correct quantities, prices, and subtotal",
+      "test_type": "Positive"
+    },
+    {
+      "id": "TC-01-02", 
+      "story_id": "US-01",
+      "title": "Verify item removal from cart",
+      "preconditions": "User has items in cart, user is on cart page",
+      "test_steps": "1. Click remove button next to an item\n2. Confirm removal if prompted\n3. Check cart updates",
+      "expected_result": "Item is removed from cart, subtotal updates, confirmation message shown",
+      "test_type": "Positive"
+    },
+    {
+      "id": "TC-02-01",
+      "story_id": "US-02", 
+      "title": "Verify valid credit card payment",
+      "preconditions": "User at checkout, items in cart, credit card selected",
+      "test_steps": "1. Enter valid credit card details\n2. Submit payment\n3. Wait for processing",
+      "expected_result": "Payment processes successfully, order confirmation displayed",
+      "test_type": "Positive"
+    },
+    {
+      "id": "TC-02-02",
+      "story_id": "US-02",
+      "title": "Verify invalid credit card error handling",
+      "preconditions": "User at checkout, items in cart, credit card selected", 
+      "test_steps": "1. Enter invalid credit card number\n2. Submit payment\n3. Observe error handling",
+      "expected_result": "Clear error message displayed, payment not processed, user can correct information",
+      "test_type": "Negative"
+    },
+    {
+      "id": "TC-02-03",
+      "story_id": "US-02",
+      "title": "Verify payment gateway timeout handling",
+      "preconditions": "User at checkout, items in cart, credit card selected",
+      "test_steps": "1. Simulate payment gateway timeout\n2. Submit payment\n3. Observe system behavior", 
+      "expected_result": "User sees timeout message, can retry payment, no duplicate charges",
+      "test_type": "Resilience"
+    },
+    {
+      "id": "TC-03-01",
+      "story_id": "US-03",
+      "title": "Verify order confirmation page",
+      "preconditions": "User completed purchase successfully",
+      "test_steps": "1. Complete checkout process\n2. View order confirmation page\n3. Verify information displayed",
+      "expected_result": "Order confirmation shows order number, items, total, shipping address",
+      "test_type": "Positive"
+    },
+    {
+      "id": "TC-03-02",
+      "story_id": "US-03",
+      "title": "Verify confirmation email delivery",
+      "preconditions": "User completed purchase with valid email",
+      "test_steps": "1. Complete checkout\n2. Check email inbox\n3. Open confirmation email",
+      "expected_result": "Confirmation email received within 5 minutes with correct order details",
+      "test_type": "Positive"
+    }
+  ]
+}

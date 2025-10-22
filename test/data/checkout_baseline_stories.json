@@ -1,0 +1,74 @@
+{
+  "stories": [
+    {
+      "id": "US-01",
+      "title": "Shopping Cart Management",
+      "description": "As a customer, I want to manage items in my shopping cart so that I can review my selections before checkout",
+      "acceptance_criteria": [
+        {
+          "given": "I have items in my cart",
+          "when": "I view my cart",
+          "then": "I see all items with prices and quantities"
+        },
+        {
+          "given": "I have an item in my cart",
+          "when": "I change the quantity",
+          "then": "The subtotal updates automatically"
+        },
+        {
+          "given": "I have an item in my cart", 
+          "when": "I remove the item",
+          "then": "The item is removed and cart updates"
+        }
+      ],
+      "story_points": 3,
+      "sp_justification": "Basic CRUD operations with real-time updates",
+      "risk": "Low"
+    },
+    {
+      "id": "US-02",
+      "title": "Credit Card Payment Processing",
+      "description": "As a customer, I want to pay with credit card so that I can complete my purchase securely",
+      "acceptance_criteria": [
+        {
+          "given": "I am at checkout with items in cart",
+          "when": "I select credit card payment",
+          "then": "I see a secure payment form with required fields"
+        },
+        {
+          "given": "I enter invalid credit card information",
+          "when": "I submit the payment",
+          "then": "I see clear error messages indicating what to fix"
+        },
+        {
+          "given": "I enter valid credit card information",
+          "when": "I submit the payment", 
+          "then": "The payment processes and I see order confirmation"
+        }
+      ],
+      "story_points": 8,
+      "sp_justification": "Integration with payment gateway, security requirements, error handling",
+      "risk": "High"
+    },
+    {
+      "id": "US-03", 
+      "title": "Order Confirmation and Email",
+      "description": "As a customer, I want to receive order confirmation so that I have proof of purchase and details",
+      "acceptance_criteria": [
+        {
+          "given": "I complete a purchase successfully",
+          "when": "The payment processes",
+          "then": "I see an order confirmation page with order details"
+        },
+        {
+          "given": "I provide my email address",
+          "when": "The order is confirmed",
+          "then": "I receive a confirmation email with order summary"
+        }
+      ],
+      "story_points": 2,
+      "sp_justification": "Simple email integration and confirmation page",
+      "risk": "Low"
+    }
+  ]
+}

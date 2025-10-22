@@ -1,0 +1,20 @@
+{
+  "epic": {
+    "id": "EPIC-001",
+    "title": "E-commerce Checkout System",
+    "description": "Implement a complete checkout process for online purchases including payment processing, address management, and order confirmation.",
+    "key_requirements": [
+      "User can add/remove items from cart",
+      "Multiple payment methods (credit card, PayPal)",
+      "Address validation and auto-complete", 
+      "Order summary and confirmation email",
+      "Inventory validation during checkout",
+      "Tax and shipping calculations",
+      "Guest checkout option",
+      "Saved payment methods for returning customers"
+    ],
+    "risk_factors": ["payment processing", "data security", "inventory management", "PCI compliance"],
+    "complexity": "High",
+    "business_value": "Critical"
+  }
+}
