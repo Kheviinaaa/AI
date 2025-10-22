@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "objective": { "type": "string" },
+    "expected_result": { "type": "string" }
+  },
+  "required": ["id", "objective", "expected_result"]
+}

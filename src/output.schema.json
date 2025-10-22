@@ -1,0 +1,19 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "Epic": { "type": "string" },
+      "UserStories": {
+        "type": "array",
+        "items": { "$ref": "story.schema.json" }
+      },
+      "TestCases": {
+        "type": "array",
+        "items": {
+          "$ref": "test.schema.json"}
+      }
+    },
+    "required": [ "Epic", "UserStories", "TestCases" ]
+  }
+}
