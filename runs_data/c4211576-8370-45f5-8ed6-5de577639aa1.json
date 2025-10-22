@@ -1,0 +1,307 @@
+{
+  "run_id": "c4211576-8370-45f5-8ed6-5de577639aa1",
+  "project_name": "AI Jira Project",
+  "epics": [
+    {
+      "userStories": [
+        {
+          "title": "User can add items to the cart",
+          "description": "As a user, I want to be able to add items to my cart so that I can purchase multiple items at once.",
+          "acceptanceCriteria": {
+            "given": "I am on the product page",
+            "when": "I click on the 'Add to Cart' button",
+            "then": "The item should be added to my cart and I should see a confirmation message."
+          },
+          "storyPoints": 3
+        },
+        {
+          "title": "User can view the cart",
+          "description": "As a user, I want to view my cart so that I can see the items I plan to purchase.",
+          "acceptanceCriteria": {
+            "given": "I have items in my cart",
+            "when": "I navigate to the cart page",
+            "then": "I should see a list of all items in my cart along with their prices and a total amount."
+          },
+          "storyPoints": 2
+        },
+        {
+          "title": "User can proceed to checkout",
+          "description": "As a user, I want to proceed to checkout so that I can complete my purchase.",
+          "acceptanceCriteria": {
+            "given": "I am on the cart page",
+            "when": "I click on the 'Proceed to Checkout' button",
+            "then": "I should be taken to the checkout page."
+          },
+          "storyPoints": 2
+        },
+        {
+          "title": "User can enter shipping information",
+          "description": "As a user, I want to enter my shipping information so that my order can be delivered to the correct address.",
+          "acceptanceCriteria": {
+            "given": "I am on the checkout page",
+            "when": "I fill in my shipping details and click 'Continue'",
+            "then": "My shipping information should be saved and I should be taken to the payment page."
+          },
+          "storyPoints": 5
+        },
+        {
+          "title": "User can select a payment method",
+          "description": "As a user, I want to select a payment method so that I can pay for my order.",
+          "acceptanceCriteria": {
+            "given": "I am on the payment page",
+            "when": "I select a payment method and enter my payment details",
+            "then": "My payment method should be saved and I should be able to proceed to place the order."
+          },
+          "storyPoints": 5
+        },
+        {
+          "title": "User can complete the order",
+          "description": "As a user, I want to complete my order so that I can finalize my purchase.",
+          "acceptanceCriteria": {
+            "given": "I have entered my shipping and payment information",
+            "when": "I click on the 'Place Order' button",
+            "then": "I should see an order confirmation page with my order details."
+          },
+          "storyPoints": 8
+        },
+        {
+          "title": "User receives order confirmation email",
+          "description": "As a user, I want to receive an order confirmation email so that I have a record of my purchase.",
+          "acceptanceCriteria": {
+            "given": "I have successfully placed an order",
+            "when": "I check my email",
+            "then": "I should receive an email confirming my order details."
+          },
+          "storyPoints": 3
+        }
+      ],
+      "testCases": [
+        {
+          "id": "TC001",
+          "objective": "Verify that the user can add items to the cart.",
+          "expectedResult": "The item is added to the cart and a confirmation message is displayed."
+        },
+        {
+          "id": "TC002",
+          "objective": "Verify that the user can view the cart.",
+          "expectedResult": "The cart displays all items with their prices and total amount."
+        },
+        {
+          "id": "TC003",
+          "objective": "Verify that the user can proceed to checkout.",
+          "expectedResult": "The user is redirected to the checkout page."
+        },
+        {
+          "id": "TC004",
+          "objective": "Verify that the user can enter shipping information.",
+          "expectedResult": "The shipping information is saved and the user is taken to the payment page."
+        },
+        {
+          "id": "TC005",
+          "objective": "Verify that the user can select a payment method.",
+          "expectedResult": "The selected payment method is saved and the user can proceed to place the order."
+        },
+        {
+          "id": "TC006",
+          "objective": "Verify that the user can complete the order.",
+          "expectedResult": "The user sees an order confirmation page with order details."
+        },
+        {
+          "id": "TC007",
+          "objective": "Verify that the user receives an order confirmation email.",
+          "expectedResult": "The user receives an email confirming the order details."
+        }
+      ],
+      "UserStories": [],
+      "TestCases": [],
+      "Epic": "E-Commerce Checkout System"
+    },
+    {
+      "userStories": [
+        {
+          "title": "User Signup Functionality",
+          "description": "As a new user, I want to be able to sign up for an account securely so that I can access the application.",
+          "acceptanceCriteria": {
+            "given": "I am on the signup page",
+            "when": "I enter valid user details and click the signup button",
+            "then": "I should receive a confirmation email and be redirected to the login page"
+          },
+          "storyPoints": 5
+        },
+        {
+          "title": "User Login Functionality",
+          "description": "As a registered user, I want to log in securely so that I can access my account.",
+          "acceptanceCriteria": {
+            "given": "I am on the login page",
+            "when": "I enter valid credentials and click the login button",
+            "then": "I should be redirected to my dashboard"
+          },
+          "storyPoints": 5
+        },
+        {
+          "title": "Password Recovery",
+          "description": "As a user, I want to recover my password securely in case I forget it.",
+          "acceptanceCriteria": {
+            "given": "I am on the login page",
+            "when": "I click on the 'Forgot Password' link and enter my email",
+            "then": "I should receive an email with instructions to reset my password"
+          },
+          "storyPoints": 3
+        },
+        {
+          "title": "Email Verification for Signup",
+          "description": "As a new user, I want to verify my email address after signing up to ensure my account is secure.",
+          "acceptanceCriteria": {
+            "given": "I have signed up with a valid email address",
+            "when": "I click on the verification link in the confirmation email",
+            "then": "My email should be marked as verified and I should be able to log in"
+          },
+          "storyPoints": 8
+        },
+        {
+          "title": "Two-Factor Authentication",
+          "description": "As a user, I want to enable two-factor authentication for added security when logging in.",
+          "acceptanceCriteria": {
+            "given": "I am logged into my account",
+            "when": "I enable two-factor authentication in my account settings",
+            "then": "I should receive a verification code via SMS or email during subsequent logins"
+          },
+          "storyPoints": 8
+        }
+      ],
+      "testCases": [
+        {
+          "id": "TC001",
+          "objective": "Verify user can sign up with valid details",
+          "expectedResult": "User receives a confirmation email and is redirected to the login page"
+        },
+        {
+          "id": "TC002",
+          "objective": "Verify user can log in with valid credentials",
+          "expectedResult": "User is redirected to their dashboard"
+        },
+        {
+          "id": "TC003",
+          "objective": "Verify password recovery process",
+          "expectedResult": "User receives an email with password reset instructions"
+        },
+        {
+          "id": "TC004",
+          "objective": "Verify email verification after signup",
+          "expectedResult": "User's email is marked as verified and they can log in"
+        },
+        {
+          "id": "TC005",
+          "objective": "Verify two-factor authentication setup",
+          "expectedResult": "User receives a verification code during subsequent logins"
+        }
+      ],
+      "UserStories": [],
+      "TestCases": [],
+      "Epic": "User Authentication"
+    },
+    {
+      "userStories": [
+        {
+          "title": "View Order History",
+          "description": "As a user, I want to view my order history so that I can keep track of my past purchases.",
+          "acceptanceCriteria": {
+            "given": "the user is logged into their account",
+            "when": "the user navigates to the 'Order History' section",
+            "then": "the user should see a list of all their past orders with details such as order number, date, and total amount"
+          },
+          "storyPoints": 5
+        },
+        {
+          "title": "View Order Details",
+          "description": "As a user, I want to view the details of a specific order so that I can see what items were included.",
+          "acceptanceCriteria": {
+            "given": "the user is on the 'Order History' page",
+            "when": "the user clicks on an order",
+            "then": "the user should see the details of that order including item descriptions, quantities, and shipping information"
+          },
+          "storyPoints": 3
+        },
+        {
+          "title": "Cancel Order",
+          "description": "As a user, I want to cancel an order that I no longer want so that I can avoid unnecessary charges.",
+          "acceptanceCriteria": {
+            "given": "the user is viewing the details of an order",
+            "when": "the user clicks the 'Cancel Order' button",
+            "then": "the order should be marked as canceled and the user should receive a confirmation message"
+          },
+          "storyPoints": 8
+        },
+        {
+          "title": "Reorder Items",
+          "description": "As a user, I want to reorder items from a past order so that I can quickly purchase them again.",
+          "acceptanceCriteria": {
+            "given": "the user is viewing the details of a past order",
+            "when": "the user clicks the 'Reorder' button",
+            "then": "the items from that order should be added to the shopping cart"
+          },
+          "storyPoints": 5
+        },
+        {
+          "title": "Track Order Status",
+          "description": "As a user, I want to track the status of my current orders so that I know when to expect delivery.",
+          "acceptanceCriteria": {
+            "given": "the user is on the 'Order History' page",
+            "when": "the user clicks on an active order",
+            "then": "the user should see the current status of the order (e.g., processing, shipped, delivered)"
+          },
+          "storyPoints": 3
+        }
+      ],
+      "testCases": [
+        {
+          "id": "TC001",
+          "objective": "Verify that users can view their order history.",
+          "expectedResult": "User sees a list of all past orders with order number, date, and total amount."
+        },
+        {
+          "id": "TC002",
+          "objective": "Verify that users can view details of a specific order.",
+          "expectedResult": "User sees item descriptions, quantities, and shipping information for the selected order."
+        },
+        {
+          "id": "TC003",
+          "objective": "Verify that users can cancel an order.",
+          "expectedResult": "Order is marked as canceled and user receives a confirmation message."
+        },
+        {
+          "id": "TC004",
+          "objective": "Verify that users can reorder items from a past order.",
+          "expectedResult": "Items from the selected order are added to the shopping cart."
+        },
+        {
+          "id": "TC005",
+          "objective": "Verify that users can track the status of their current orders.",
+          "expectedResult": "User sees the current status of the order (e.g., processing, shipped, delivered)."
+        }
+      ],
+      "UserStories": [],
+      "TestCases": [],
+      "Epic": "Order Management"
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "EPIC",
+        "stories": [],
+        "test_cases": []
+      },
+      {
+        "epic_id": "EPIC",
+        "stories": [],
+        "test_cases": []
+      },
+      {
+        "epic_id": "EPIC",
+        "stories": [],
+        "test_cases": []
+      }
+    ]
+  }
+}

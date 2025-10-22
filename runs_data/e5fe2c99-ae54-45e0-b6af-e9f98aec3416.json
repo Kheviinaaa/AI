@@ -1,0 +1,53 @@
+{
+  "run_id": "e5fe2c99-ae54-45e0-b6af-e9f98aec3416",
+  "project_name": "AI Jira Project",
+  "mode": "real",
+  "epics": [
+    {
+      "id": "EPIC-001",
+      "title": "E-commerce Checkout System",
+      "description": "Implement a complete checkout process for online purchases including payment processing, address management, and order confirmation.",
+      "key_requirements": [
+        "User can add/remove items from cart",
+        "Multiple payment methods (credit card, PayPal)",
+        "Address validation and auto-complete",
+        "Order summary and confirmation email",
+        "Inventory validation during checkout",
+        "Tax and shipping calculations",
+        "Guest checkout option",
+        "Saved payment methods for returning customers"
+      ],
+      "risk_factors": [
+        "payment processing",
+        "data security",
+        "inventory management",
+        "PCI compliance"
+      ],
+      "complexity": "High",
+      "business_value": "Critical"
+    },
+    {
+      "id": "EPIC-002",
+      "title": "User Registration",
+      "description": "User registration system",
+      "key_requirements": [
+        "Email validation",
+        "Password strength"
+      ]
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "E-commerce Checkout System",
+        "stories": [],
+        "test_cases": []
+      },
+      {
+        "epic_id": "User Registration",
+        "stories": [],
+        "test_cases": []
+      }
+    ]
+  }
+}

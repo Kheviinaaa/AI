@@ -1,0 +1,30 @@
+{
+  "run_id": "b6058121-9d08-4289-af31-e06267e5ae3f",
+  "project_name": "AI Jira Project",
+  "epics": [
+    {
+      "epic_id": "E1",
+      "title": "E-Commerce Checkout",
+      "description": "Checkout + secure payment"
+    },
+    {
+      "epic_id": "E2",
+      "title": "User Authentication",
+      "description": "Login/Signup/Reset"
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "E1",
+        "stories": [],
+        "test_cases": []
+      },
+      {
+        "epic_id": "E2",
+        "stories": [],
+        "test_cases": []
+      }
+    ]
+  }
+}

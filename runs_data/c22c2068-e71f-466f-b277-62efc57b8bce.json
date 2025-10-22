@@ -1,0 +1,30 @@
+{
+  "run_id": "c22c2068-e71f-466f-b277-62efc57b8bce",
+  "project_name": "AI Jira Project",
+  "epics": [
+    {
+      "epic_id": "E1",
+      "title": "E-Commerce Checkout",
+      "description": "Build a checkout process with secure payment gateway integration."
+    },
+    {
+      "epic_id": "E2",
+      "title": "User Authentication",
+      "description": "Implement signup, login, and password recovery features."
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "E1",
+        "stories": [],
+        "test_cases": []
+      },
+      {
+        "epic_id": "E2",
+        "stories": [],
+        "test_cases": []
+      }
+    ]
+  }
+}

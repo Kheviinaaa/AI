@@ -1,0 +1,50 @@
+{
+  "run_id": "b9c25a2d-07cc-44b9-a0b5-8133c83ee040",
+  "project_name": "Checkout System",
+  "epics": [
+    {
+      "epic_id": "EPC-001",
+      "title": "Checkout",
+      "description": "Cart + payment"
+    },
+    {
+      "epic_id": "EPC-002",
+      "title": "Auth",
+      "description": "Login/Signup"
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "EPC-001",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      },
+      {
+        "epic_id": "EPC-002",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      }
+    ]
+  }
+}

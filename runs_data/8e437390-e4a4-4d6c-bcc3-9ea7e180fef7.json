@@ -1,0 +1,20 @@
+{
+  "run_id": "8e437390-e4a4-4d6c-bcc3-9ea7e180fef7",
+  "project_name": "Checkout System",
+  "epics": [
+    {
+      "epic_id": "EPC-001",
+      "title": "Checkout",
+      "description": "Cart + payment"
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "EPC-001",
+        "stories": [],
+        "test_cases": []
+      }
+    ]
+  }
+}

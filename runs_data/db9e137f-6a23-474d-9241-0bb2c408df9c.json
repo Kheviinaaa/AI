@@ -1,0 +1,38 @@
+{
+  "run_id": "db9e137f-6a23-474d-9241-0bb2c408df9c",
+  "project_name": "Checkout System",
+  "epics": [
+    {
+      "epic_id": "EPC-001",
+      "title": "Checkout",
+      "description": "Cart + payment"
+    },
+    {
+      "epic_id": "EPC-002",
+      "title": "Auth",
+      "description": "Login/Signup"
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "EPC-001",
+        "stories": [
+          "Story for Checkout"
+        ],
+        "test_cases": [
+          "Test for Checkout"
+        ]
+      },
+      {
+        "epic_id": "EPC-002",
+        "stories": [
+          "Story for Auth"
+        ],
+        "test_cases": [
+          "Test for Auth"
+        ]
+      }
+    ]
+  }
+}

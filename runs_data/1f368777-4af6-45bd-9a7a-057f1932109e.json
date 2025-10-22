@@ -1,0 +1,20 @@
+{
+  "run_id": "1f368777-4af6-45bd-9a7a-057f1932109e",
+  "project_name": "AI Jira Project",
+  "epics": [
+    {
+      "epic_id": "E1",
+      "title": "Test Epic",
+      "description": "Test description"
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "E1",
+        "stories": [],
+        "test_cases": []
+      }
+    ]
+  }
+}

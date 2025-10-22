@@ -1,0 +1,91 @@
+{
+  "run_id": "ba333a7b-b949-4b4e-b7f9-4da11a907522",
+  "project_name": "AI Jira Project",
+  "mode": "real",
+  "epics": [
+    {
+      "epic_id": "E1",
+      "title": "E-Commerce Checkout",
+      "description": "Implement a checkout process with cart review, payment, and order confirmation."
+    },
+    {
+      "epic_id": "E2",
+      "title": "User Authentication",
+      "description": "Develop secure login, signup, and password reset functionalities."
+    },
+    {
+      "epic_id": "E3",
+      "title": "Product Catalog",
+      "description": "Allow users to browse, search, and filter products in the online catalog."
+    },
+    {
+      "epic_id": "E4",
+      "title": "Order Tracking",
+      "description": "Enable users to view their order status, shipment tracking, and history."
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "E1",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      },
+      {
+        "epic_id": "E2",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      },
+      {
+        "epic_id": "E3",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      },
+      {
+        "epic_id": "E4",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      }
+    ]
+  }
+}

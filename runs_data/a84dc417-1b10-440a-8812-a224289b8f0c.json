@@ -1,0 +1,50 @@
+{
+  "run_id": "a84dc417-1b10-440a-8812-a224289b8f0c",
+  "project_name": "AI Jira Project",
+  "epics": [
+    {
+      "epic_id": "E1",
+      "title": "E-Commerce Checkout",
+      "description": "Checkout + secure payment"
+    },
+    {
+      "epic_id": "E2",
+      "title": "User Authentication",
+      "description": "Login/Signup/Reset"
+    }
+  ],
+  "output": {
+    "stories": [
+      {
+        "epic_id": "E1",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      },
+      {
+        "epic_id": "E2",
+        "stories": [
+          "Review Cart Items",
+          "Enter Billing and Shipping Details",
+          "Process Secure Payment",
+          "Generate Digital Receipt",
+          "View Completed Orders"
+        ],
+        "test_cases": [
+          "TC01",
+          "TC02",
+          "TC03"
+        ]
+      }
+    ]
+  }
+}
