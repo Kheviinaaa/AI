@@ -336,7 +336,7 @@ class TestEvaluator:
         
         # Save report
         report_path = docs_dir / "testing-report.md"
-        with open(report_path, "w") as f:
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(report)
         
         print(f"✅ Evaluation complete! Report saved to {report_path}")
