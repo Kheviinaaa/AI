@@ -1,0 +1,11 @@
+Flask
+flask-cors
+pydantic
+pandas
+python-dotenv
+jsonschema
+requests
+openai
+pytest
+export
+rich
