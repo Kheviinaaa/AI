@@ -4,6 +4,8 @@
     "type": "object",
     "properties": {
       "Epic": { "type": "string" },
+      "epic_id": { "type": ["string", "null"] },
+      "description": { "type": "string" },
       "UserStories": {
         "type": "array",
         "items": { "$ref": "story.schema.json" }
