@@ -1,217 +1,343 @@
 [
   {
-    "Epic": "Build checkout flow with payment gateway.",
+    "Epic": "E-Commerce Checkout System",
+    "epic_id": null,
+    "description": "Build checkout flow with payment gateway.",
     "UserStories": [
       {
-        "title": "Review Cart Items",
-        "description": "As a user, I want to review items in my cart so I can confirm my purchase before payment.",
+        "title": "Review items in cart",
+        "description": "As a user, I want to review items in cart so I can complete the flow in the epic.",
         "acceptance_criteria": {
-          "Given": "User has items in cart",
-          "When": "User opens the cart page",
-          "Then": "Items and prices display correctly"
-        },
-        "story_points": 5
-      },
-      {
-        "title": "Enter Billing and Shipping Details",
-        "description": "As a user, I want to enter billing and shipping details to complete my purchase.",
-        "acceptance_criteria": {
-          "Given": "User proceeds to checkout",
-          "When": "User fills billing and shipping info",
-          "Then": "Details are saved and validated"
-        },
-        "story_points": 8
-      },
-      {
-        "title": "Process Secure Payment",
-        "description": "As a user, I want to make a secure payment so my order is successfully completed.",
-        "acceptance_criteria": {
-          "Given": "User is on checkout page",
-          "When": "Valid card details are entered",
-          "Then": "System confirms payment"
-        },
-        "story_points": 8
-      },
-      {
-        "title": "Generate Digital Receipt",
-        "description": "As a system, I want to generate a digital receipt automatically after successful payment.",
-        "acceptance_criteria": {
-          "Given": "Payment is confirmed",
-          "When": "Order is completed",
-          "Then": "Receipt is created and emailed to user"
+          "Given": "The user is on the page for review items in cart",
+          "When": "The user performs the review items in cart action",
+          "Then": "The system completes review items in cart and shows a clear result"
         },
         "story_points": 3
       },
       {
-        "title": "View Completed Orders",
-        "description": "As an admin, I want to view all completed orders for tracking purposes.",
+        "title": "Enter shipping & billing info",
+        "description": "As a user, I want to enter shipping & billing info so I can complete the flow in the epic.",
         "acceptance_criteria": {
-          "Given": "Admin logs into dashboard",
-          "When": "Admin navigates to Orders section",
-          "Then": "All completed orders are displayed"
+          "Given": "The user is on the page for enter shipping & billing info",
+          "When": "The user performs the enter shipping & billing info action",
+          "Then": "The system completes enter shipping & billing info and shows a clear result"
         },
         "story_points": 5
+      },
+      {
+        "title": "Secure payment",
+        "description": "As a user, I want to secure payment so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for secure payment",
+          "When": "The user performs the secure payment action",
+          "Then": "The system completes secure payment and shows a clear result"
+        },
+        "story_points": 8
+      },
+      {
+        "title": "Order confirmation & receipt",
+        "description": "As a user, I want to order confirmation & receipt so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for order confirmation & receipt",
+          "When": "The user performs the order confirmation & receipt action",
+          "Then": "The system completes order confirmation & receipt and shows a clear result"
+        },
+        "story_points": 5
+      },
+      {
+        "title": "Order history view",
+        "description": "As a user, I want to order history view so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for order history view",
+          "When": "The user performs the order history view action",
+          "Then": "The system completes order history view and shows a clear result"
+        },
+        "story_points": 3
       }
     ],
     "TestCases": [
       {
-        "id": "TC01",
-        "objective": "Validate cart review page",
-        "expected_result": "Items and prices display correctly"
+        "id": "TC-01",
+        "objective": "Validate: Review items in cart",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for review items in cart",
+          "Perform the action: review items in cart",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       },
       {
-        "id": "TC02",
-        "objective": "Verify payment process",
-        "expected_result": "Payment accepted and confirmation shown"
+        "id": "TC-02",
+        "objective": "Validate: Enter shipping & billing info",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for enter shipping & billing info",
+          "Perform the action: enter shipping & billing info",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       },
       {
-        "id": "TC03",
-        "objective": "Check receipt generation",
-        "expected_result": "Receipt is created and sent to the user after successful payment"
+        "id": "TC-03",
+        "objective": "Validate: Secure payment",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for secure payment",
+          "Perform the action: secure payment",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
+      },
+      {
+        "id": "TC-04",
+        "objective": "Validate: Order confirmation & receipt",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for order confirmation & receipt",
+          "Perform the action: order confirmation & receipt",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
+      },
+      {
+        "id": "TC-05",
+        "objective": "Validate: Order history view",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for order history view",
+          "Perform the action: order history view",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       }
     ]
   },
   {
-    "Epic": "Add secure login and signup functionality.",
+    "Epic": "User Authentication",
+    "epic_id": null,
+    "description": "Add secure login and signup functionality.",
     "UserStories": [
       {
-        "title": "Review Cart Items",
-        "description": "As a user, I want to review items in my cart so I can confirm my purchase before payment.",
+        "title": "Signup with email",
+        "description": "As a user, I want to signup with email so I can complete the flow in the epic.",
         "acceptance_criteria": {
-          "Given": "User has items in cart",
-          "When": "User opens the cart page",
-          "Then": "Items and prices display correctly"
-        },
-        "story_points": 5
-      },
-      {
-        "title": "Enter Billing and Shipping Details",
-        "description": "As a user, I want to enter billing and shipping details to complete my purchase.",
-        "acceptance_criteria": {
-          "Given": "User proceeds to checkout",
-          "When": "User fills billing and shipping info",
-          "Then": "Details are saved and validated"
-        },
-        "story_points": 8
-      },
-      {
-        "title": "Process Secure Payment",
-        "description": "As a user, I want to make a secure payment so my order is successfully completed.",
-        "acceptance_criteria": {
-          "Given": "User is on checkout page",
-          "When": "Valid card details are entered",
-          "Then": "System confirms payment"
-        },
-        "story_points": 8
-      },
-      {
-        "title": "Generate Digital Receipt",
-        "description": "As a system, I want to generate a digital receipt automatically after successful payment.",
-        "acceptance_criteria": {
-          "Given": "Payment is confirmed",
-          "When": "Order is completed",
-          "Then": "Receipt is created and emailed to user"
+          "Given": "The user is on the page for signup with email",
+          "When": "The user performs the signup with email action",
+          "Then": "The system completes signup with email and shows a clear result"
         },
         "story_points": 3
       },
       {
-        "title": "View Completed Orders",
-        "description": "As an admin, I want to view all completed orders for tracking purposes.",
+        "title": "Login with credentials",
+        "description": "As a user, I want to login with credentials so I can complete the flow in the epic.",
         "acceptance_criteria": {
-          "Given": "Admin logs into dashboard",
-          "When": "Admin navigates to Orders section",
-          "Then": "All completed orders are displayed"
+          "Given": "The user is on the page for login with credentials",
+          "When": "The user performs the login with credentials action",
+          "Then": "The system completes login with credentials and shows a clear result"
         },
         "story_points": 5
+      },
+      {
+        "title": "Forgot/reset password",
+        "description": "As a user, I want to forgot/reset password so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for forgot/reset password",
+          "When": "The user performs the forgot/reset password action",
+          "Then": "The system completes forgot/reset password and shows a clear result"
+        },
+        "story_points": 8
+      },
+      {
+        "title": "Session timeout & logout",
+        "description": "As a user, I want to session timeout & logout so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for session timeout & logout",
+          "When": "The user performs the session timeout & logout action",
+          "Then": "The system completes session timeout & logout and shows a clear result"
+        },
+        "story_points": 5
+      },
+      {
+        "title": "Update profile",
+        "description": "As a user, I want to update profile so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for update profile",
+          "When": "The user performs the update profile action",
+          "Then": "The system completes update profile and shows a clear result"
+        },
+        "story_points": 3
       }
     ],
     "TestCases": [
       {
-        "id": "TC01",
-        "objective": "Validate cart review page",
-        "expected_result": "Items and prices display correctly"
+        "id": "TC-01",
+        "objective": "Validate: Signup with email",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for signup with email",
+          "Perform the action: signup with email",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       },
       {
-        "id": "TC02",
-        "objective": "Verify payment process",
-        "expected_result": "Payment accepted and confirmation shown"
+        "id": "TC-02",
+        "objective": "Validate: Login with credentials",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for login with credentials",
+          "Perform the action: login with credentials",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       },
       {
-        "id": "TC03",
-        "objective": "Check receipt generation",
-        "expected_result": "Receipt is created and sent to the user after successful payment"
+        "id": "TC-03",
+        "objective": "Validate: Forgot/reset password",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for forgot/reset password",
+          "Perform the action: forgot/reset password",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
+      },
+      {
+        "id": "TC-04",
+        "objective": "Validate: Session timeout & logout",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for session timeout & logout",
+          "Perform the action: session timeout & logout",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
+      },
+      {
+        "id": "TC-05",
+        "objective": "Validate: Update profile",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for update profile",
+          "Perform the action: update profile",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       }
     ]
   },
   {
-    "Epic": "Enable users to view and manage their orders.",
+    "Epic": "Order Management",
+    "epic_id": null,
+    "description": "Enable users to view and manage their orders.",
     "UserStories": [
       {
-        "title": "Review Cart Items",
-        "description": "As a user, I want to review items in my cart so I can confirm my purchase before payment.",
+        "title": "Review items in cart",
+        "description": "As a user, I want to review items in cart so I can complete the flow in the epic.",
         "acceptance_criteria": {
-          "Given": "User has items in cart",
-          "When": "User opens the cart page",
-          "Then": "Items and prices display correctly"
-        },
-        "story_points": 5
-      },
-      {
-        "title": "Enter Billing and Shipping Details",
-        "description": "As a user, I want to enter billing and shipping details to complete my purchase.",
-        "acceptance_criteria": {
-          "Given": "User proceeds to checkout",
-          "When": "User fills billing and shipping info",
-          "Then": "Details are saved and validated"
-        },
-        "story_points": 8
-      },
-      {
-        "title": "Process Secure Payment",
-        "description": "As a user, I want to make a secure payment so my order is successfully completed.",
-        "acceptance_criteria": {
-          "Given": "User is on checkout page",
-          "When": "Valid card details are entered",
-          "Then": "System confirms payment"
-        },
-        "story_points": 8
-      },
-      {
-        "title": "Generate Digital Receipt",
-        "description": "As a system, I want to generate a digital receipt automatically after successful payment.",
-        "acceptance_criteria": {
-          "Given": "Payment is confirmed",
-          "When": "Order is completed",
-          "Then": "Receipt is created and emailed to user"
+          "Given": "The user is on the page for review items in cart",
+          "When": "The user performs the review items in cart action",
+          "Then": "The system completes review items in cart and shows a clear result"
         },
         "story_points": 3
       },
       {
-        "title": "View Completed Orders",
-        "description": "As an admin, I want to view all completed orders for tracking purposes.",
+        "title": "Enter shipping & billing info",
+        "description": "As a user, I want to enter shipping & billing info so I can complete the flow in the epic.",
         "acceptance_criteria": {
-          "Given": "Admin logs into dashboard",
-          "When": "Admin navigates to Orders section",
-          "Then": "All completed orders are displayed"
+          "Given": "The user is on the page for enter shipping & billing info",
+          "When": "The user performs the enter shipping & billing info action",
+          "Then": "The system completes enter shipping & billing info and shows a clear result"
         },
         "story_points": 5
+      },
+      {
+        "title": "Secure payment",
+        "description": "As a user, I want to secure payment so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for secure payment",
+          "When": "The user performs the secure payment action",
+          "Then": "The system completes secure payment and shows a clear result"
+        },
+        "story_points": 8
+      },
+      {
+        "title": "Order confirmation & receipt",
+        "description": "As a user, I want to order confirmation & receipt so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for order confirmation & receipt",
+          "When": "The user performs the order confirmation & receipt action",
+          "Then": "The system completes order confirmation & receipt and shows a clear result"
+        },
+        "story_points": 5
+      },
+      {
+        "title": "Order history view",
+        "description": "As a user, I want to order history view so I can complete the flow in the epic.",
+        "acceptance_criteria": {
+          "Given": "The user is on the page for order history view",
+          "When": "The user performs the order history view action",
+          "Then": "The system completes order history view and shows a clear result"
+        },
+        "story_points": 3
       }
     ],
     "TestCases": [
       {
-        "id": "TC01",
-        "objective": "Validate cart review page",
-        "expected_result": "Items and prices display correctly"
+        "id": "TC-01",
+        "objective": "Validate: Review items in cart",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for review items in cart",
+          "Perform the action: review items in cart",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       },
       {
-        "id": "TC02",
-        "objective": "Verify payment process",
-        "expected_result": "Payment accepted and confirmation shown"
+        "id": "TC-02",
+        "objective": "Validate: Enter shipping & billing info",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for enter shipping & billing info",
+          "Perform the action: enter shipping & billing info",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       },
       {
-        "id": "TC03",
-        "objective": "Check receipt generation",
-        "expected_result": "Receipt is created and sent to the user after successful payment"
+        "id": "TC-03",
+        "objective": "Validate: Secure payment",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for secure payment",
+          "Perform the action: secure payment",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
+      },
+      {
+        "id": "TC-04",
+        "objective": "Validate: Order confirmation & receipt",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for order confirmation & receipt",
+          "Perform the action: order confirmation & receipt",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
+      },
+      {
+        "id": "TC-05",
+        "objective": "Validate: Order history view",
+        "preconditions": "System under test is available",
+        "test_steps": [
+          "Navigate to the page for order history view",
+          "Perform the action: order history view",
+          "Verify the outcome is displayed"
+        ],
+        "expected_result": "Application behaves according to acceptance criteria"
       }
     ]
   }
