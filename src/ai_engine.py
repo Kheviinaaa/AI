@@ -1,30 +1,59 @@
-# ---------------------------------------------------------
-# AI Engineer 1 – E-Commerce Checkout System
-# This module generates User Stories and Test Cases using an AI model.
-# It supports multiple-epic batching, post-processing, and validation.
-# If the OpenAI API key is unavailable, it uses mock data for testing/demo.
-# ---------------------------------------------------------
-
+from __future__ import annotations
 from openai import OpenAI
-import os, json
+from dotenv import load_dotenv, find_dotenv
+import os
+import pathlib
+env_path = pathlib.Path(__file__).resolve().parents[1] / ".env"  # project_root/.env
+load_dotenv(find_dotenv())
 
-# ---------------------------------------------------------
-# 1. Create a client connection to OpenAI using the environment variable key
-# ---------------------------------------------------------
-client = None
-# ---------------------------------------------------------
-# 2. Define the prompt template the AI will receive
-# ---------------------------------------------------------
-PROMPT = (
-    "Given the epic: {epic}, generate user stories and test cases "
-    "in Agile format. Each story must include Title, Description, "
-    "Acceptance Criteria (Given/When/Then), and Story Points (1–13). "
-    "Each test case must include ID, Objective, and Expected Result. "
-    "Return the output as structured JSON."
-)
+import json
+import logging
+import random
+import time
+from typing import Any, Dict, Iterable, List
 
-# ---- helper: make model JSON safe to parse -----------------------------------
-def _safe_json_loads(text: str):
+try:  # Support execution via ``python src/ai_engine.py`` and ``-m src.ai_engine``
+    from src.prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
+except ImportError:  # pragma: no cover - defensive import for script usage
+    from prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE  # type: ignore
+
+try:
+    from src.validators import validate_output as schema_validate_output
+except ImportError:  # pragma: no cover - defensive import for script usage
+    from validators import validate_output as schema_validate_output  # type: ignore
+
+_client: OpenAI | None = None
+
+def _initialise_client() -> OpenAI | None:
+    """Create (or reuse) an OpenAI client when credentials are present."""
+
+    global _client
+
+    if _client is not None:
+        return _client
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key or OpenAI is None:
+        logging.info("OpenAI client unavailable – running in mock mode.")
+        return None
+
+    try:
+        _client = OpenAI(api_key=api_key)
+        logging.info("OpenAI client initialised successfully.")
+    except Exception as exc:  # pragma: no cover - depends on runtime environment
+        logging.warning("Failed to initialise OpenAI client: %s", exc)
+        _client = None
+
+    return _client
+
+
+def using_live_model() -> bool:
+    """Expose whether the engine is currently backed by OpenAI."""
+
+    return _initialise_client() is not None
+
+
+def _safe_json_loads(text: str) -> Dict[str, Any]:
     """
     Try to parse JSON. If the model wrapped it in prose or code fences,
     strip and extract the first top-level {...} block.
@@ -48,198 +77,245 @@ def _safe_json_loads(text: str):
         # If we get here, let the caller fall back to mock
         raise
 
-# ---------------------------------------------------------
-# 3. Function: generate_user_stories(epic_text)
-#    - Sends the formatted prompt to the AI model.
-#    - Returns JSON with User Stories and Test Cases.
-#    - If the API is unavailable or quota exceeded, returns mock data.
-# ---------------------------------------------------------
-def generate_user_stories(epic_text: str, epic_title: str | None = None):
+
+def _mock_user_stories(epic_text: str, epic_title: str | None) -> Dict[str, Any]:
     """
-    Returns: dict with keys 'Epic', 'UserStories', 'TestCases' as your schema expects.
-    Uses real OpenAI if client is available; otherwise returns your mock.
+    Smarter mock generator:
+    - Derives story titles from the epic text
+    - Produces 5 concrete stories with non-empty fields
+    - Creates mapped test cases
     """
-    # If no client (no OPENAI_API_KEY), use your existing mock
-    if client is None:
-        print(" API unavailable, using mock output: OpenAI client not initialized")
+    import re
+    title = (epic_title or epic_text or "Epic").strip()
+    title = re.sub(r"^\s*(generate|create)\s+user\s+stories\s+for\s+", "", title, flags=re.I)[:60] or "Epic"
+
+    # Seed defaults (switch to auth flavor if prompt mentions auth)
+    seeds = [
+        "Review items in cart",
+        "Enter shipping & billing info",
+        "Secure payment",
+        "Order confirmation & receipt",
+        "Order history view",
+    ]
+    if any(k in (epic_text or "").lower() for k in ["auth", "login", "signup", "reset"]):
+        seeds = [
+            "Signup with email",
+            "Login with credentials",
+            "Forgot/reset password",
+            "Session timeout & logout",
+            "Update profile",
+        ]
+
+    def mk(seed: str, sp: int) -> Dict[str, Any]:
+        s = seed[0].upper() + seed[1:]
         return {
-            "Epic": epic_title or epic_text,
-            "UserStories": [
-                {
-                    "title": "Review Cart Items",
-                    "description": "As a user, I want to review items in my cart so I can confirm my purchase before payment.",
-                    "acceptance_criteria": {
-                        "Given": "User has items in cart",
-                        "When": "User opens the cart page",
-                        "Then": "Items and prices display correctly"
-                    },
-                    "story_points": 5
-                },
-                {
-                    "title": "Enter Billing and Shipping Details",
-                    "description": "As a user, I want to enter billing and shipping details to complete my purchase.",
-                    "acceptance_criteria": {
-                        "Given": "User proceeds to checkout",
-                        "When": "User fills billing and shipping info",
-                        "Then": "Details are saved and validated"
-                    },
-                    "story_points": 8
-                },
-                {
-                    "title": "Process Secure Payment",
-                    "description": "As a user, I want to make a secure payment so my order is successfully completed.",
-                    "acceptance_criteria": {
-                        "Given": "User is on checkout page",
-                        "When": "Valid card details are entered",
-                        "Then": "System confirms payment"
-                    },
-                    "story_points": 8
-                },
-                {
-                    "title": "Generate Digital Receipt",
-                    "description": "As a system, I want to generate a digital receipt automatically after successful payment.",
-                    "acceptance_criteria": {
-                        "Given": "Payment is confirmed",
-                        "When": "Order is completed",
-                        "Then": "Receipt is created and emailed to user"
-                    },
-                    "story_points": 3
-                },
-                {
-                    "title": "View Completed Orders",
-                    "description": "As an admin, I want to view all completed orders for tracking purposes.",
-                    "acceptance_criteria": {
-                        "Given": "Admin logs into dashboard",
-                        "When": "Admin navigates to Orders section",
-                        "Then": "All completed orders are displayed"
-                    },
-                    "story_points": 5
-                }
-            ],
-            "TestCases": [
-                {
-                    "id": "TC01",
-                    "objective": "Validate cart review page",
-                    "expected_result": "Items and prices display correctly"
-                },
-                {
-                    "id": "TC02",
-                    "objective": "Verify payment process",
-                    "expected_result": "Payment accepted and confirmation shown"
-                },
-                {
-                    "id": "TC03",
-                    "objective": "Check receipt generation",
-                    "expected_result": "Receipt is created and sent to the user after successful payment"
-                }
-            ]
+            "title": s,
+            "description": f"As a user, I want to {seed.lower()} so I can complete the flow in the epic.",
+            "acceptance_criteria": {
+                "Given": f"The user is on the page for {seed.lower()}",
+                "When":  f"The user performs the {seed.lower()} action",
+                "Then":  f"The system completes {seed.lower()} and shows a clear result",
+            },
+            "story_points": sp,
         }
 
-    # Real API path with retries and JSON repair
-    msg = PROMPT.format(epic=epic_text)
-    last_err = None
-    for attempt in range(1, 4):
+    sps = [3, 5, 8, 5, 3]
+    stories = [mk(seeds[i % len(seeds)], sps[i]) for i in range(5)]
+
+    tests = []
+    for i, s in enumerate(stories, start=1):
+        tests.append({
+            "id": f"TC-{i:02d}",
+            "objective": f"Validate: {s['title']}",
+            "preconditions": "System under test is available",
+            "test_steps": [
+                f"Navigate to the page for {s['title'].lower()}",
+                f"Perform the action: {s['title'].lower()}",
+                "Verify the outcome is displayed",
+            ],
+            "expected_result": "Application behaves according to acceptance criteria",
+        })
+
+    return {
+        "Epic": title,
+        "epic_id": None,
+        "description": epic_text,
+        "UserStories": stories,
+        "TestCases": tests,
+    }
+
+def _normalise_user_stories(raw: Dict[str, Any], epic_title: str | None, epic_id: str | None, epic_description: str | None) -> Dict[str, Any]:
+    """Normalise the response from the model (or mock) into schema-compliant JSON."""
+
+    stories = []
+    for story in raw.get("UserStories", []) or []:
+        if not isinstance(story, dict):
+            continue
+        sp = story.get("story_points", 3)
         try:
-            resp = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{"role": "user", "content": msg}],
-                temperature=0.4,
-                response_format={"type": "json_object"},   # ✅ add this line
+            sp = int(sp)
+        except Exception:
+            sp = 3
+        sp = max(1, min(13, sp))
+
+        ac = story.get("acceptance_criteria") or {}
+        if isinstance(ac, list):
+            # Occasionally models return a list of clauses – map heuristically.
+            mapped = {"Given": "", "When": "", "Then": ""}
+            for clause in ac:
+                if not isinstance(clause, str):
+                    continue
+                lower = clause.lower()
+                if "given" in lower and not mapped["Given"]:
+                    mapped["Given"] = clause
+                elif "when" in lower and not mapped["When"]:
+                    mapped["When"] = clause
+                elif "then" in lower and not mapped["Then"]:
+                    mapped["Then"] = clause
+            ac = mapped
+        stories.append(
+            {
+                "title": story.get("title", "").strip(),
+                "description": story.get("description", "").strip(),
+                "acceptance_criteria": {
+                    "Given": (ac or {}).get("Given", ""),
+                    "When": (ac or {}).get("When", ""),
+                    "Then": (ac or {}).get("Then", ""),
+                },
+                "story_points": sp,
+            }
+        )
+
+    test_cases = []
+    for index, case in enumerate(raw.get("TestCases", []) or [], start=1):
+        if isinstance(case, str):
+            case = {"objective": case}
+        if not isinstance(case, dict):
+            continue
+
+        steps = case.get("test_steps") or case.get("steps") or case.get("actions") or []
+        if isinstance(steps, str):
+            steps = [s.strip() for s in steps.split("\n") if s.strip()]
+        elif isinstance(steps, Iterable):
+            steps = [str(s).strip() for s in steps if str(s).strip()]
+        else:
+            steps = []
+
+        objective = case.get("objective", "").strip() or case.get("name", "").strip()
+        preconditions = case.get("preconditions", "").strip()
+        expected = case.get("expected_result", "").strip()
+
+        test_cases.append(
+            {
+                "id": str(case.get("id") or f"TC-{index:02d}"),
+                "objective": objective or "Validate critical scenario",
+                "preconditions": preconditions or "System under test is available",
+                "test_steps": steps or ["Execute the described scenario"],
+                "expected_result": expected or "Application behaves according to acceptance criteria",
+            }
+        )
+
+    result = {
+        "Epic": epic_title or raw.get("Epic") or "",
+        "epic_id": epic_id,
+        "description": epic_description or raw.get("description") or "",
+        "UserStories": stories,
+        "TestCases": test_cases,
+    }
+
+    return result
+
+
+def generate_user_stories(
+    epic_text: str,
+    epic_title: str | None = None,
+    *,
+    epic_id: str | None = None,
+    epic_description: str | None = None,
+) -> Dict[str, Any]:
+    """Generate user stories and test cases for an epic.
+
+    The return value always matches ``output.schema.json`` (a list element) so
+    that downstream code can directly run schema validation.
+    """
+
+    client = _initialise_client()
+    if client is None:
+        logging.info("Using deterministic mock output for epic: %s", epic_title or epic_text)
+        raw = _mock_user_stories(epic_text, epic_title)
+        return _normalise_user_stories(raw, epic_title, epic_id, epic_description)
+
+    prompt = USER_PROMPT_TEMPLATE.format(epic=epic_text)
+    last_error: Exception | None = None
+
+    for attempt in range(1, 4):  # simple retry with backoff
+        try:
+            response = client.chat.completions.create(
+                model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.3,
+                response_format={"type": "json_object"},
             )
 
-            content = resp.choices[0].message.content
+            content = response.choices[0].message.content
+            raw = _safe_json_loads(content)
+            raw.setdefault("UserStories", [])
+            raw.setdefault("TestCases", [])
+            return _normalise_user_stories(raw, epic_title, epic_id, epic_description)
+        except Exception as exc:  # pragma: no cover - network dependent
+            last_error = exc
+            sleep_time = 0.6 * attempt + random.uniform(0, 0.2)
+            logging.warning("OpenAI call failed (attempt %s): %s", attempt, exc)
+            time.sleep(sleep_time)
 
-            data = _safe_json_loads(content)
-            # Normalize to your schema
-            data.setdefault("UserStories", [])
-            data.setdefault("TestCases", [])
-            # Ensure story_points numeric and clamp 1..13; ensure AC keys exist
-            for s in data["UserStories"]:
-                sp = s.get("story_points", 3)
-                try:
-                    sp = int(sp)
-                except Exception:
-                    sp = 3
-                s["story_points"] = max(1, min(13, sp))
-
-                ac = s.get("acceptance_criteria") or {}
-                s["acceptance_criteria"] = {
-                    "Given": ac.get("Given", ""),
-                    "When": ac.get("When", ""),
-                    "Then": ac.get("Then", "")
-                }
-
-            # Stamp Epic field
-            data["Epic"] = epic_title or data.get("Epic") or epic_text
-            return data
-
-        except Exception as e:
-            last_err = e
-            # simple backoff
-            import time, random
-            time.sleep(0.6 * attempt + random.uniform(0, 0.2))
-
-    # Fallback to your mock if all attempts fail
-    print(" API unavailable, using mock output:", last_err)
-    return {
-        "Epic": epic_title or epic_text,
-        "UserStories": [
-            {
-                "title": "Review Cart Items",
-                "description": "As a user, I want to review items in my cart so I can confirm my purchase before payment.",
-                "acceptance_criteria": {
-                    "Given": "User has items in cart",
-                    "When": "User opens the cart page",
-                    "Then": "Items and prices display correctly"
-                },
-                "story_points": 5
-            }
-        ],
-        "TestCases": [
-            {"id": "TC01", "objective": "Cart page loads", "expected_result": "Items and totals render"}
-        ]
-    }
+    logging.error("Falling back to mock output after OpenAI errors: %s", last_error)
+    raw = _mock_user_stories(epic_text, epic_title)
+    return _normalise_user_stories(raw, epic_title, epic_id, epic_description)
 
 
 # ---------------------------------------------------------
 # 5. Helper Function: validate_output()
 #    - Checks that required fields exist in user stories and test cases
 # ---------------------------------------------------------
-def validate_output(data):
-    required_story_fields = {"title", "description", "acceptance_criteria", "story_points"}
-    required_test_fields = {"id", "objective", "expected_result"}
-    valid = True
+def validate_output(data: Any) -> bool:
+    """Validate generated data against the JSON schema bundle."""
 
-    if "UserStories" in data:
-        for story in data["UserStories"]:
-            if not required_story_fields.issubset(story.keys()):
-                valid = False
+    payload: List[Dict[str, Any]]
+    if isinstance(data, dict):
+        payload = [data]
+    else:
+        payload = list(data)
 
-    if "TestCases" in data:
-        for test in data["TestCases"]:
-            if not required_test_fields.issubset(test.keys()):
-                valid = False
-
-    return valid
+    is_valid, _errors = schema_validate_output(payload)
+    return bool(is_valid)
 
 # ---------------------------------------------------------
 # 6. Helper Function: post_process()
 #    - Removes duplicate epics and cleans data
 # ---------------------------------------------------------
-def post_process(all_outputs):
-    seen_titles = set()
-    cleaned = []
+def post_process(all_outputs: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    seen: set[str] = set()
+    cleaned: List[Dict[str, Any]] = []
     for epic_data in all_outputs:
-        title = epic_data.get("Epic", "").strip()
-        if title and title not in seen_titles:
-            seen_titles.add(title)
+        epic_id = str(epic_data.get("epic_id") or "").lower()
+        title = str(epic_data.get("Epic") or "").strip().lower()
+        key = epic_id or title
+        if not key:
             cleaned.append(epic_data)
+            continue
+        if key in seen:
+            continue
+        seen.add(key)
+        cleaned.append(epic_data)
     return cleaned
 
 # ---------------------------------------------------------
 # Simulated Jira Integration (for demo)
 # ---------------------------------------------------------
-def fetch_epics_from_jira(project_key="ECOM"):
+def fetch_epics_from_jira(project_key: str = "ECOM") -> List[Dict[str, str]]:
     """
     Simulated Jira fetch function for demonstration.
     In a real system, this would use Jira's REST API to retrieve epics.
@@ -268,7 +344,12 @@ if __name__ == "__main__":
     # b) Loop through each epic and generate results
     for epic in epics:
         print(f" Processing epic: {epic['title']} ...")
-        result = generate_user_stories(epic["description"], epic.get("title"))
+        result = generate_user_stories(
+            epic["description"],
+            epic.get("title"),
+            epic_id=epic.get("epic_id"),
+            epic_description=epic.get("description"),
+        )
         all_outputs.append(result)
 
     # c) Run post-processing and validation
@@ -281,12 +362,14 @@ if __name__ == "__main__":
         validation_results.append({"Epic": epic_data.get("Epic"), "Valid": ok})
 
     # d) Save all outputs and validation summary
-    os.makedirs("out", exist_ok=True)  # create folder if missing
+    base_dir = os.path.dirname(__file__)
+    out_dir = os.path.join(base_dir, "out")
+    os.makedirs(out_dir, exist_ok=True)
 
-    with open("out/sample_output.json", "w") as f:
+    with open(os.path.join(out_dir, "sample_output.json"), "w", encoding="utf-8") as f:
         json.dump(cleaned_outputs, f, indent=2)
 
-    with open("out/validation_report.json", "w") as f:
+    with open(os.path.join(out_dir, "validation_report.json"), "w", encoding="utf-8") as f:
         json.dump(validation_results, f, indent=2)
 
     print(" Post-processing complete. Validation results saved to validation_report.json.")
