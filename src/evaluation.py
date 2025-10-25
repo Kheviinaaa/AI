@@ -3,9 +3,13 @@
 # ---------------------------------------------------------
 import json
 import os
-from validators import validate_output
-from heuristics import compute_metrics
 
+try:
+    from src.validators import validate_output
+    from src.heuristics import compute_metrics
+except ImportError:  # pragma: no cover - fallback when run as script
+    from validators import validate_output  # type: ignore
+    from heuristics import compute_metrics  # type: ignore
 
 def load_output(path):
     """Load JSON output from ai_engine.py."""
