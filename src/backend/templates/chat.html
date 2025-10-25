@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Jira — Chat</title>
+  <style>
+    /* ---------- Reset ---------- */
+    *,*::before,*::after{box-sizing:border-box}html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";color:#1f2937; background:
+      radial-gradient(1200px 800px at 0% 0%, #c7d2fe 0%, transparent 60%),
+      radial-gradient(1000px 700px at 100% 0%, #ddd6fe 0%, transparent 60%),
+      linear-gradient(135deg,#667eea 0%, #764ba2 100%);
+      background-attachment: fixed; }
+
+    /* ---------- Layout Shell ---------- */
+    .header {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.35));
+      border-bottom: 1px solid rgba(255,255,255,0.35);
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 18px 20px; }
+
+    .brand {
+      display:flex; align-items:center; gap:12px;
+    }
+    .brand-badge {
+      width:40px;height:40px; display:grid; place-items:center;
+      background: linear-gradient(135deg,#6366f1,#8b5cf6);
+      color:#fff; border-radius:12px; font-weight:800; letter-spacing:.5px;
+      box-shadow: 0 8px 24px rgba(99,102,241,.35);
+    }
+    .brand h1 { font-size:22px; margin:0; background: linear-gradient(90deg,#4338ca,#8b5cf6);
+      -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+    .nav {
+      margin-left:auto; display:flex; gap:10px; align-items:center;
+    }
+    .nav a {
+      text-decoration:none; font-weight:600; font-size:14px;
+      padding:8px 14px; border-radius:10px; color:#374151;
+      border:1px solid rgba(55,65,81,.15);
+      background: rgba(255,255,255,.6);
+    }
+    .nav a:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+
+    /* ---------- Page ---------- */
+    .page { max-width: 980px; margin: 26px auto; padding: 0 16px 36px; }
+    .headline { display:flex; align-items:baseline; gap:10px; margin: 6px 0 8px; }
+    .headline h2{ margin:0; font-size:24px; font-weight:800; color:#111827;}
+    .mode { font-size: 13px; color:#4b5563; }
+
+    /* ---------- Chat ---------- */
+    .chat-wrap {
+      display:grid; grid-template-rows: 1fr auto; gap:16px;
+      height: calc(100vh - 210px);
+      min-height: 520px;
+    }
+    .card {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 16px;
+      box-shadow: 0 14px 40px rgba(31,41,55,.12);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 18px 50px rgba(31,41,55,.15); }
+
+    /* Stream */
+    .stream { padding: 18px; overflow:auto; }
+    .msg { margin: 12px 0; display:grid; gap:6px; }
+    .who { font-size: 12px; color:#6b7280; letter-spacing:.2px; }
+    .bubble {
+      background: #f8f9ff; border:1px solid #e5e7ff; border-left:4px solid #6d28d9;
+      border-radius: 12px; padding: 12px 14px; white-space: pre-wrap; word-break: break-word;
+      color:#111827;
+    }
+    .msg.user .bubble { background:#f6f7fb; border:1px solid #eceff6; border-left-color:#94a3b8; }
+
+    /* Payload blocks */
+    .payload { display:grid; gap:12px; }
+    .pill {
+      display:inline-block; font-weight:700; color:#fff; font-size:12px; letter-spacing:.3px;
+      padding:7px 12px; border-radius:999px;
+      background: linear-gradient(90deg,#6d28d9,#7c3aed,#a78bfa);
+      box-shadow: 0 6px 20px rgba(124,58,237,.35);
+    }
+    .blk { background:#fff; border:1px solid #eef0ff; border-radius:12px; padding:12px 14px; }
+
+    .story-grid { display:grid; gap:12px; }
+    .story { background:#fff; border:1px solid #eef0ff; border-radius:12px; padding:12px 14px; }
+    .story h5 { margin:0 0 4px; font-size:15px; color:#111827; }
+    .meta { color:#6b7280; font-size:12px; }
+    .gwt { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
+    .gwt .kv { background:#f8f9ff; border:1px solid #eef0ff; border-radius:8px; padding:8px; font-size:13px; }
+
+    .tests { display:grid; gap:10px; }
+    .step {
+      background:#fafafa; border:1px dashed #e8e8f4; border-radius:8px; padding:8px 10px; font-size:13px;
+    }
+
+    /* Composer */
+    .composer { padding: 12px; display:grid; gap:8px; }
+    .composer label { font-size:13px; color:#4b5563; }
+    .composer textarea{
+      resize:vertical; min-height:100px; padding:12px; border-radius:12px;
+      border:1px solid #e6e8ef; outline:none; font-size:14px;
+      background:rgba(255,255,255,.9);
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .btn {
+      appearance: none; border:0; cursor:pointer; font-weight:700;
+      padding: 10px 14px; border-radius: 12px; color:#fff;
+      background: linear-gradient(90deg,#6366f1, #8b5cf6);
+      box-shadow: 0 12px 26px rgba(99,102,241,.35);
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 34px rgba(99,102,241,.4); }
+    .btn.secondary { background:#eef0ff; color:#374151; box-shadow:none; border:1px solid #e5e7eb; }
+    .btn.ghost { background: transparent; color:#111827; border:1px solid rgba(17,24,39,.1); }
+
+    /* Footer hint */
+    .hint {
+      margin-top:8px; font-size:12px; color:#475569;
+    }
+
+    @media (max-width: 820px){
+      .gwt{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header / Nav -->
+  <header class="header">
+    <div class="container" style="display:flex;align-items:center;gap:16px;">
+      <div class="brand">
+        <div class="brand-badge">AI</div>
+        <h1>AI Jira — Agile Assistant</h1>
+      </div>
+      <nav class="nav">
+        <a href="/" title="Home">Home</a>
+        <a href="/runs" title="All Runs">All Runs</a>
+        <a href="/api/runs" title="API: Runs (JSON)">Runs API</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page -->
+  <main class="page">
+    <div class="headline">
+      <h2>Chat</h2>
+      <span id="modeIndicator" class="mode">Detecting mode…</span>
+    </div>
+
+    <section class="chat-wrap">
+      <!-- Chat stream -->
+      <div id="chatStream" class="card stream" aria-live="polite"></div>
+
+      <!-- Composer -->
+      <form id="chatForm" class="card composer">
+        <label for="chatInput">Ask for stories, tests, or help (e.g., “Generate user stories for an online banking app”)</label>
+        <textarea id="chatInput" placeholder="Generate user stories for a smart home mobile app"></textarea>
+        <div class="row">
+          <button type="submit" class="btn">Send</button>
+          <button type="button" id="clearBtn" class="btn secondary">Clear</button>
+          <button type="button" id="mockBtn" class="btn ghost" title="Insert a demo prompt">Demo Prompt</button>
+        </div>
+        <div class="hint">
+          The assistant returns structured JSON (User Stories + Test Cases). Use <b>/runs</b> to review saved generations.
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- Script -->
+  <script>
+    const chatStream = document.getElementById('chatStream');
+    const chatForm   = document.getElementById('chatForm');
+    const chatInput  = document.getElementById('chatInput');
+    const clearBtn   = document.getElementById('clearBtn');
+    const mockBtn    = document.getElementById('mockBtn');
+    const modeIndicator = document.getElementById('modeIndicator');
+    let history = [];
+
+    // ---------- UI helpers ----------
+    function addMessage(role, content, payload){
+      const wrap = document.createElement('div');
+      wrap.className = `msg ${role}`;
+
+      const who = document.createElement('div');
+      who.className = 'who';
+      who.textContent = role === 'user' ? 'You' : 'Assistant';
+      wrap.appendChild(who);
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = content || '';
+      wrap.appendChild(bubble);
+
+      if (payload && role === 'assistant') {
+        wrap.appendChild(renderPayload(payload));
+      }
+
+      chatStream.appendChild(wrap);
+      chatStream.scrollTop = chatStream.scrollHeight;
+    }
+
+    function renderPayload(payload){
+      const root = document.createElement('div');
+      root.className = 'payload';
+
+      // Epic chip
+      const pill = document.createElement('div');
+      pill.className = 'pill';
+      pill.textContent = payload.Epic || payload.epic_id || 'Epic';
+      root.appendChild(pill);
+
+      // Description
+      if (payload.description){
+        const blk = document.createElement('div');
+        blk.className = 'blk';
+        blk.textContent = payload.description;
+        root.appendChild(blk);
+      }
+
+      // Stories
+      if (Array.isArray(payload.UserStories) && payload.UserStories.length){
+        const group = document.createElement('div');
+        group.className = 'story-grid';
+        payload.UserStories.forEach(s => group.appendChild(renderStory(s)));
+        root.appendChild(group);
+      }
+
+      // Tests
+      if (Array.isArray(payload.TestCases) && payload.TestCases.length){
+        const tWrap = document.createElement('div');
+        tWrap.className = 'payload';
+        const tTitle = document.createElement('div');
+        tTitle.className = 'pill';
+        tTitle.textContent = 'Test Cases';
+        tWrap.appendChild(tTitle);
+
+        payload.TestCases.forEach(tc => tWrap.appendChild(renderTest(tc)));
+        root.appendChild(tWrap);
+      }
+
+      return root;
+    }
+
+    function renderStory(story){
+      const card = document.createElement('div');
+      card.className = 'story';
+
+      const h = document.createElement('h5');
+      h.textContent = story.title || '(Untitled Story)';
+      card.appendChild(h);
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = `Story points: ${story.story_points ?? ''}`;
+      card.appendChild(meta);
+
+      if (story.description){
+        const p = document.createElement('div');
+        p.textContent = story.description;
+        card.appendChild(p);
+      }
+
+      const g = document.createElement('div');
+      g.className = 'gwt';
+
+      const given = document.createElement('div');
+      given.className = 'kv';
+      given.innerHTML = `<strong>Given</strong><br>${story.acceptance_criteria?.Given || ''}`;
+
+      const when = document.createElement('div');
+      when.className = 'kv';
+      when.innerHTML = `<strong>When</strong><br>${story.acceptance_criteria?.When || ''}`;
+
+      const then = document.createElement('div');
+      then.className = 'kv';
+      then.innerHTML = `<strong>Then</strong><br>${story.acceptance_criteria?.Then || ''}`;
+
+      g.append(given, when, then);
+      card.appendChild(g);
+
+      return card;
+    }
+
+    function renderTest(tc){
+      const card = document.createElement('div');
+      card.className = 'blk';
+
+      const top = document.createElement('div');
+      top.innerHTML = `<strong>${tc.id || ''}</strong> — ${tc.objective || ''}`;
+      card.appendChild(top);
+
+      if (tc.preconditions){
+        const pre = document.createElement('div');
+        pre.className = 'meta';
+        pre.textContent = `Preconditions: ${tc.preconditions}`;
+        card.appendChild(pre);
+      }
+
+      const steps = Array.isArray(tc.test_steps) ? tc.test_steps : [tc.test_steps].filter(Boolean);
+      if (steps.length){
+        const list = document.createElement('div');
+        list.className = 'tests';
+        steps.forEach((s, i) => {
+          const row = document.createElement('div');
+          row.className = 'step';
+          row.textContent = `${i+1}. ${s}`;
+          list.appendChild(row);
+        });
+        card.appendChild(list);
+      }
+
+      if (tc.expected_result){
+        const exp = document.createElement('div');
+        exp.className = 'meta';
+        exp.textContent = `Expected: ${tc.expected_result}`;
+        card.appendChild(exp);
+      }
+
+      return card;
+    }
+
+    // ---------- Network ----------
+    async function sendChat(message, historyObj){
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ message, history: historyObj })
+      });
+      if (!res.ok){
+        let err = 'Request failed';
+        try { const j = await res.json(); err = j.message || j.error || err; } catch {}
+        throw new Error(err);
+      }
+      return res.json();
+    }
+
+    // ---------- Events ----------
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+
+      addMessage('user', msg);
+      chatInput.value = '';
+
+      try{
+        const data = await sendChat(msg, history);
+        history = data.history || [];
+        modeIndicator.textContent = data.mode === 'openai'
+          ? 'Connected to OpenAI (usage may incur costs).'
+          : 'Offline mock mode (no cost).';
+        addMessage(data.reply.role || 'assistant', data.reply.content || '', data.reply.payload);
+      }catch(err){
+        addMessage('assistant', err.message || 'Something went wrong.');
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      history = [];
+      chatStream.innerHTML = '';
+      modeIndicator.textContent = 'History cleared. Offline mock mode (no cost).';
+    });
+
+    mockBtn.addEventListener('click', () => {
+      chatInput.value = 'Generate 5 user stories and 5 test cases for an e-commerce checkout with payment and receipt.';
+      chatInput.focus();
+    });
+
+    // Default indicator
+    modeIndicator.textContent = 'Offline mock mode (no cost).';
+  </script>
+</body>
+</html>
