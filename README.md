@@ -1,2 +1,1 @@
-# AI
-example
+A small Flask app that turns Jira epics (or free-text prompts) into Agile user stories and test cases, with JSON export and a simple Chat-style UI. It can run fully offline (mock mode) or with live OpenAI + Jira if credentials are provided.
