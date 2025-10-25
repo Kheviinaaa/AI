@@ -182,7 +182,9 @@
                         <div class="run-id">Run ID: {{ r.run_id }}</div>
                         <div class="run-meta">
                             <strong>Project:</strong> {{ r.project_name or "—" }}<br>
-                            <strong>Generated:</strong> {{ r.generated_at | int }}<br>
+                            <strong>Generated:</strong> {{ r.generated_at or "—" }}<br>
+                            <strong>Mode:</strong> {{ r.mode or "mock" }}<br>
+                            <span class="status-badge">Completed</span>
                             <span class="status-badge">Completed</span>
                     </div>
                     <div class="run-actions">
@@ -209,9 +211,3 @@
                     <a href="/" class="btn" style="margin-top: 15px;">
                         Generate New Stories
                     </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
