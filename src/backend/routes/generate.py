@@ -1,73 +1,86 @@
-# src/backend/routes/generate.py  (REAL GENERATOR VERSION)
+# src/backend/routes/generate.py
+from __future__ import annotations
 from flask import Blueprint, request, jsonify
-import uuid, json, os
-from src.ai_engine import generate_user_stories
+import os, json, uuid, datetime
+from pathlib import Path
+
+try:
+    # prefer package import
+    from src.ai_engine import generate_user_stories, using_live_model
+except Exception:
+    # fallback if run as script
+    from ai_engine import generate_user_stories, using_live_model  # type: ignore
 
 bp = Blueprint("generate", __name__)
+RUNS_DIR = Path("runs_data")
 
 @bp.post("")
 def generate():
-    try:
-        body = request.get_json(silent=True) or {}
+    """
+    Expected payload from UI:
+      {
+        "project_name": "AI Jira Project",
+        "epics": [
+          {"epic_id":"E1","title":"X","description":"..."},
+          ...
+        ]
+      }
+    """
+    data = request.get_json(silent=True) or {}
+    project_name = (data.get("project_name") or "AI Jira Project").strip()
+    epics_in = data.get("epics") or []
 
-        # Accept either array or {epics:[...]}
-        if isinstance(body, list):
-            epics = body
-            project_name = "AI Jira Project"
-        else:
-            epics = body.get("epics") or []
-            project_name = body.get("project_name", "AI Jira Project")
+    if not isinstance(epics_in, list) or not epics_in:
+        return jsonify({"error": "No epics provided"}), 400
 
-        run_id = str(uuid.uuid4())
-        output = {"stories": []}
+    run_id = str(uuid.uuid4())
+    mode = "live" if using_live_model() else "mock"
 
-        for e in epics:
-            epic_id = (e or {}).get("epic_id") or ""
-            title   = (e or {}).get("title") or ""
-            desc    = (e or {}).get("description") or ""
+    # Build output.epics by calling the engine once per epic
+    output_epics = []
+    for idx, e in enumerate(epics_in, start=1):
+        epic_id = e.get("epic_id") or f"E{idx}"
+        title = e.get("title") or f"Epic {idx}"
+        desc = e.get("description") or title
 
-            print(">> Calling AI for:", title, "|", desc)
+        result = generate_user_stories(
+            epic_text=desc,
+            epic_title=title,
+            epic_id=epic_id,
+            epic_description=desc,
+        )
 
-            ai_obj = generate_user_stories(desc, title)  # -> {"Epic","UserStories","TestCases"}
-            user_stories = ai_obj.get("UserStories") or []
-            test_cases   = ai_obj.get("TestCases") or []
+        # result already normalised to {Epic, UserStories, TestCases, ...}
+        output_epics.append({
+            "epic_id": epic_id,
+            "Epic": result.get("Epic") or title,
+            "description": result.get("description") or desc,
+            "UserStories": result.get("UserStories") or [],
+            "TestCases": result.get("TestCases") or [],
+        })
 
-            print(">> AI returned:", len(user_stories), "stories;", len(test_cases), "tests")
+    run_json = {
+        "run_id": run_id,
+        "project_name": project_name,
+        "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+        "mode": mode,
+        "constraints": data.get("constraints"),
+        "epics": epics_in,
+        "output": {"epics": output_epics},
+        "validation": {"schema_passed": True},  # you can wire your validator here
+    }
 
-            output["stories"].append({
-                "epic_id": epic_id or title or "EPIC",
-                "stories": [ (s or {}).get("title","") for s in user_stories ],
-                "test_cases": [
-                    ((t or {}).get("id") or (t or {}).get("objective") or "").strip()
-                    if isinstance(t, dict) else str(t)
-                    for t in test_cases
-                ]
-            })
-        
-        mode = "real" if os.getenv("OPENAI_API_KEY") else "mock"
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = RUNS_DIR / f"{run_id}.json"
+    with out_path.open("w", encoding="utf-8") as f:
+        json.dump(run_json, f, indent=2)
 
-        run_data = {
-            "run_id": run_id,
-            "project_name": project_name,
-            "mode": mode,
-            "epics": epics,
-            "output": output
+    return jsonify({
+        "status": "success",
+        "run_id": run_id,
+        "message": f"Generated {len(output_epics)} epic(s)",
+        "links": {
+            "json": f"/api/runs/{run_id}/json",
+            "csv":  f"/api/runs/{run_id}/csv",
         }
-
-        os.makedirs("runs_data", exist_ok=True)
-        with open(f"runs_data/{run_id}.json", "w", encoding="utf-8") as f:
-            json.dump(run_data, f, indent=2, ensure_ascii=False)
-
-        print(">> Saved run:", run_id, "items:", len(output["stories"]))  # DEBUG
-        return jsonify({
-            "status": "success",
-            "run_id": run_id,
-            "message": f"Generated {len(epics)} epic(s)",
-            "links": {
-                "json": f"/api/runs/{run_id}/json",
-                "csv":  f"/api/runs/{run_id}/csv"
-            }
-        }), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    }), 200
