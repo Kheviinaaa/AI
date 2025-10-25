@@ -3,7 +3,12 @@
   "properties": {
     "id": { "type": "string" },
     "objective": { "type": "string" },
+    "preconditions": { "type": "string" },
+    "test_steps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
     "expected_result": { "type": "string" }
   },
-  "required": ["id", "objective", "expected_result"]
+  "required": ["id", "objective", "preconditions", "test_steps", "expected_result"]
 }
