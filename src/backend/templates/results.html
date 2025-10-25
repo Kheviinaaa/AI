@@ -1,52 +1,127 @@
 {% extends "base.html" %}
 {% block content %}
 
-Mode: {{ run.mode|default('unknown') }}
-
 <div class="results-section">
-  <h3>Results: {{ run.run_id }}</h3>
-  <div class="btn-container">
-    <a href="/api/runs/{{ run.run_id }}/csv" class="btn btn-primary">Download CSV</a>
-    <a href="/" class="btn btn-secondary">Generate New</a>
+  <div class="results-header">
+    <div>
+      <h3>Results: {{ run.run_id }}</h3>
+      <p class="meta">Mode: {{ run.mode|default('mock') }} · Project: {{ run.project_name }}</p>
+    </div>
+    <div class="btn-container">
+      <a href="/api/runs/{{ run.run_id }}/csv" class="btn btn-primary">Download CSV</a>
+      <a href="/" class="btn btn-secondary">Generate New</a>
+    </div>
   </div>
 
-  {% for epic in run.output.stories %}
-  <p><strong>Epic:</strong> {{ epic.epic_id }}</p>
-  <p><strong>User Stories:</strong></p>
-  <ul>
-    {% for s in epic.stories %}
-      <li>{{ s }}</li>
-    {% endfor %}
-  </ul>
-  <p><strong>Test Cases:</strong></p>
-  <ul>
-    {% for t in epic.test_cases %}
-      <li>{{ t }}</li>
-    {% endfor %}
-  </ul>
-{% endfor %}
+  {% if run.output.epics %}
+    {% for epic in run.output.epics %}
+      <section class="epic-block">
+        <h4>{{ epic.title }} <span class="epic-id">({{ epic.epic_id }})</span></h4>
+        {% if epic.description %}
+          <p class="epic-description">{{ epic.description }}</p>
+        {% endif %}
 
+        <h5>User Stories</h5>
+        {% if epic.stories %}
+          <table class="stories-table">
+            <thead>
+              <tr>
+                <th scope="col">Story ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Given / When / Then</th>
+                <th scope="col">Story Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for story in epic.stories %}
+                <tr>
+                  <td>{{ story.story_id }}</td>
+                  <td>{{ story.title }}</td>
+                  <td>{{ story.description }}</td>
+                  <td>
+                    <strong>Given:</strong> {{ story.acceptance_criteria.Given }}<br>
+                    <strong>When:</strong> {{ story.acceptance_criteria.When }}<br>
+                    <strong>Then:</strong> {{ story.acceptance_criteria.Then }}
+                  </td>
+                  <td>{{ story.story_points }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="empty-state">No user stories were generated.</p>
+        {% endif %}
 
-  <h3>Data Table</h3>
-  <table>
+        <h5>Test Cases</h5>
+        {% if epic.test_cases %}
+          <table class="tests-table">
+            <thead>
+              <tr>
+                <th scope="col">Test Case</th>
+                <th scope="col">Objective</th>
+                <th scope="col">Preconditions</th>
+                <th scope="col">Steps</th>
+                <th scope="col">Expected Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for test in epic.test_cases %}
+                <tr>
+                  <td>{{ test.id }}</td>
+                  <td>{{ test.objective }}</td>
+                  <td>{{ test.preconditions }}</td>
+                  <td>
+                    <ol>
+                      {% for step in test.test_steps %}
+                        <li>{{ step }}</li>
+                      {% endfor %}
+                    </ol>
+                  </td>
+                  <td>{{ test.expected_result }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p class="empty-state">No test cases were generated.</p>
+        {% endif %}
+      </section>
+    {% endfor %}
+  {% else %}
+    <p class="empty-state">No epics found for this run.</p>
+  {% endif %}
+
+  <h3>CSV Preview</h3>
+  <table class="csv-preview">
     <thead>
       <tr>
-        <th>Epic ID</th>
-        <th>Story</th>
-        <th>Test Case</th>
+        <th scope="col">Epic ID</th>
+        <th scope="col">Story Title</th>
+        <th scope="col">Test Case Summary</th>
       </tr>
     </thead>
     <tbody>
-  {% for epic in run.output.stories %}
-    {% set n = [epic.stories|length, epic.test_cases|length]|max %}
-    {% for i in range(n) %}
-      <tr>
-        <td>{{ epic.epic_id }}</td>
-        <td>{{ epic.stories[i] if i < epic.stories|length else "" }}</td>
-        <td>{{ epic.test_cases[i] if i < epic.test_cases|length else "" }}</td>
-      </tr>
-    {% endfor %}
-  {% endfor %}
+      {% for epic in run.output.epics %}
+        {% set stories = epic.stories %}
+        {% set tests = epic.test_cases %}
+        {% set row_count = [stories|length, tests|length]|max %}
+        {% for idx in range(row_count) %}
+          <tr>
+            <td>{{ epic.epic_id }}</td>
+            <td>
+              {% if idx < stories|length %}
+                {{ stories[idx].title }} ({{ stories[idx].story_id }})
+              {% endif %}
+            </td>
+            <td>
+              {% if idx < tests|length %}
+                {{ tests[idx].id }} – {{ tests[idx].objective }}
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
     </tbody>
   </table>
 </div>
