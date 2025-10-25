@@ -1,12 +1,22 @@
-import pytest
-import requests
-import json
-import time
-from pathlib import Path
-import sys
 import os
+import json
+from pathlib import Path
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+import pytest
+
+RUN_SERVER_TESTS = os.getenv("RUN_SERVER_TESTS") == "1"
+
+try:
+    import requests
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    requests = None  # type: ignore[assignment]
+    pytestmark = pytest.mark.skip(reason="requests library not installed")
+else:
+    if not RUN_SERVER_TESTS:
+        pytestmark = pytest.mark.skip(
+            reason="Set RUN_SERVER_TESTS=1 to enable end-to-end HTTP tests"
+        )
+
 
 class TestUIHappyPath:
     
