@@ -8,6 +8,7 @@ Windows (PowerShell):
   cd <path-to>\AI
   python -m venv .venv
   .venv\Scripts\activate
+
 macOS/Linux (bash/zsh):
   cd /path/to/AI
   python3 -m venv .venv
@@ -25,8 +26,10 @@ source .venv/bin/activate
 ```
   Go to http://127.0.0.1:5000/
   You’ll land on the Chat interface (home page).
+
   Type a prompt like:
     “Generate user stories for an e-commerce checkout with payment and receipt.”
+
 In mock mode the assistant returns schema-valid stories and test cases.
 ```
 # Running tests (VS Code or terminal)
@@ -39,39 +42,10 @@ Unit tests
   pytest test/unit/test_validators.py -v
 ```
 # Integration tests
-Start the server first in another terminal: 
+Start the server first in terminal: 
 python -m src.backend.app
+
+Then in another terminal(new):
 ` python test/integration/evaluation_runner.py `
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
