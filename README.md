@@ -39,7 +39,7 @@ Unit tests
   pytest test/unit/test_validators.py -v
 ```
 # Integration tests
-Start the server first in another terminal:
+Start the server first in another terminal: 
 python -m src.backend.app
 ` python test/integration/evaluation_runner.py `
 
