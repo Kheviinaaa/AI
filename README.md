@@ -43,7 +43,7 @@ Unit tests
 ```
 # Integration tests
 Start the server first in terminal: 
-python -m src.backend.app
+`python -m src.backend.app`
 
 Then in another terminal(new):
 ` python test/integration/evaluation_runner.py `
